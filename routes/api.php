@@ -24,3 +24,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('users', UserController::class);
 Route::apiResource('albums', AlbumController::class);
 Route::apiResource('photos', PhotosController::class);
+Route::post("/login",[UserController::class, "login"]);

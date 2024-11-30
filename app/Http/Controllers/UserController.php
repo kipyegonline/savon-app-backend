@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -30,7 +31,7 @@ class UserController extends Controller
        // $user->id= $request->id;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password); // Hash the password for security
+        $user->password = Hash::make($request->password); // Hash the password for security
         $user->save();
       
 
@@ -60,8 +61,8 @@ class UserController extends Controller
         //
         $user = User::findOrFail($id);
         $user->update($request->all());
-        echo "updating...";
-          $user->update($request->validated());
+     
+         
         return response()->json($user);
     }
 
@@ -78,5 +79,19 @@ class UserController extends Controller
            $user = User::findOrFail($id);
         $user->delete();
         return response()->json(['message'  => 'User deleted successfully']); 
+    }
+    public function login(Request $request){
+        ["email"=>$email,"password"=>$password]=$request;
+$user = User::where('email', $email)->first();
+
+
+if ($user && Hash::check($password, $user->password)) {
+    $token = $user->createToken('savon')->plainTextToken;
+    unset($user->password);
+
+    return response()->json(['token' => $token,"user"=>$user]);
+}else{
+    return response()->json(['Messsage'=>'Wrong email/password combination']);
+}
     }
 }

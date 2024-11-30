@@ -15,6 +15,8 @@ class PhotosController extends Controller
     public function index()
     {
         //
+         $photos= photos::all();
+    return response()->json($photos);
     }
 
     /**
@@ -36,6 +38,15 @@ class PhotosController extends Controller
     public function store(Request $request)
     {
         //
+         //
+         $photo = new photos();
+       // $photo->id= $request->id;
+        $photo->album_id = $request->album_id;
+        $photo->title = $request->title;
+         $photo->image_url = $request->image_url;
+       
+        $photo->save();
+        return response()->json(['message' => 'Photo uploaded successfully'], 201);
     }
 
     /**
@@ -44,9 +55,12 @@ class PhotosController extends Controller
      * @param  \App\Models\photos  $photos
      * @return \Illuminate\Http\Response
      */
-    public function show(photos $photos)
+    public function show(photos $id)
     {
         //
+          $photo = photos::findOrFail($id); 
+
+        return response()->json($photo);
     }
 
     /**
@@ -58,6 +72,7 @@ class PhotosController extends Controller
     public function edit(photos $photos)
     {
         //
+        
     }
 
     /**
@@ -67,9 +82,15 @@ class PhotosController extends Controller
      * @param  \App\Models\photos  $photos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, photos $photos)
+    public function update(Request $request, $id)
     {
         //
+           $photo = photos::findOrFail($id);
+       
+        $photo->update(["title"=>$request->title]);
+     
+          
+        return response()->json(["Message"=>"Title updated successfully"]);
     }
 
     /**
